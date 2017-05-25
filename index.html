@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <title>canvas实现太阳系星球运动效果</title>
+    <style>
+        body {
+            padding: 0;
+            margin : 0;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+    </style>
+    <!--引包-->
+    <script src="./node_modules/konva/konva.js"></script>
+    <script src="./js/circleMove.js"></script>
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+        // 创建舞台
+        var stage = new Konva.Stage({
+            container : "container",
+            width : window.innerWidth,
+            height : window.innerHeight
+        })
+
+        // 创建背景层 背景层开始
+        var bgLayer = new Konva.Layer();
+        stage.add(bgLayer);
+
+        // 中心点坐标
+        var centerX = stage.width()/2;
+        var centerY = stage.height()/2;
+
+        // 绘制背景
+        var innerRadius = 252 / 2;	// 内环的半径
+        var outerRadius = 220;		// 外环的半径
+
+        // 创建背景内环的虚线圆
+        var innerCircle = new Konva.Circle({
+            x : centerX, // 原点坐标
+            y : centerY,
+            radius : innerRadius, //半径
+            stroke : '#ccc', // 填充颜色
+            strokeWidth : 4,
+            dash : [10,4]  // 设置10像素的实线 4像素的虚线
+        })
+        bgLayer.add(innerCircle);
+
+        // 创建背景外环的虚线框
+        var outerCircle = new Konva.Circle({
+            x : centerX,
+            y : centerY,
+            radius : outerRadius,
+            stroke : '#ccc',
+            strokeWidth : 4,
+            dash : [10,4]  // 设置10像素的实线 4像素的虚线
+        })
+        bgLayer.add(outerCircle)
+
+        // 创建背景中心的实心圆
+        var centerCircle = new circleMove({
+            x : centerX,
+            y : centerY,
+            innerRadius : 132 / 2,
+            outerRadius : 80,
+            innerStyle: '#525A82',
+            outerStyle: '#E1E1E1',
+            text : 'WEB全栈'
+        })
+        // 把group添加到层上面去
+        centerCircle.addToGroupOrLayer(bgLayer);
+
+        //绘制层
+        bgLayer.draw();
+        // 背景层结束
+
+        // 创建动画层 动画层开始
+        var animateLayer = new Konva.Layer();
+        stage.add(animateLayer);
+
+        // 创建内环的一个组
+        var L2Group = new Konva.Group({
+            x : centerX,
+            y : centerY
+        })
+        //把L2Group这个组添加到动画层上去
+        animateLayer.add( L2Group );
+
+        // 计算圆心的坐标算法，加入组之后
+        // 内部的坐标系会变成组内坐标系，不是centerX,centerY变成0,0
+        var x0 = innerRadius*Math.cos( -60 * Math.PI / 180 );
+        var y0 = innerRadius*Math.sin( -60 * Math.PI / 180 );
+
+        // 创建内环上的第一个圆
+        var L2_circle1 = new circleMove({
+            x : innerRadius*Math.cos( -90 * Math.PI / 180 ),
+            y : innerRadius*Math.sin( -90 * Math.PI / 180 ),
+            innerRadius: 30,  					//内圆半径
+            outerRadius: 40,  					//外圆的半径
+            innerStyle: '#FACED6', 				//内圆填充的颜色呢
+            outerStyle: '#E1E1E1',				//外圆环填充的颜色
+            text: 'CSS3'
+        })
+        L2_circle1.addToGroupOrLayer(L2Group);
+
+        // 创建内环上的第二个圆
+        var L2_circle2 = new circleMove({
+            x : innerRadius*Math.cos( 30 * Math.PI / 180 ),
+            y : innerRadius*Math.sin( 30 * Math.PI / 180 ),
+            innerRadius: 30,  					//内圆半径
+            outerRadius: 40,  					//外圆的半径
+            innerStyle: '#f1fa06', 				//内圆填充的颜色呢
+            outerStyle: '#E1E1E1',				//外圆环填充的颜色
+            text: 'HTML5'
+        })
+        L2_circle2.addToGroupOrLayer(L2Group);
+
+        // 创建内环上的第三个圆
+        var L2_circle3 = new circleMove({
+            x :  innerRadius*Math.cos( 150 * Math.PI / 180 ),
+            y :  innerRadius*Math.sin( 150 * Math.PI / 180 ),
+            innerRadius: 30,  					//内圆半径
+            outerRadius: 40,  					//外圆的半径
+            innerStyle: '#88d0fa', 				//内圆填充的颜色呢
+            outerStyle: '#E1E1E1',				//外圆环填充的颜色
+            text: 'canvas'
+        })
+        L2_circle3.addToGroupOrLayer(L2Group);
+
+        // 创建外环的一个组
+        var L3Group = new Konva.Group({
+            x : centerX,
+            y : centerY
+        })
+        animateLayer.add(L3Group);
+
+        // 创建外环上的第一个圆
+        var L3_circle1 = new circleMove({
+            x : outerRadius*Math.cos( 250 * Math.PI / 180 ),
+            y : outerRadius*Math.sin( 250 * Math.PI / 180 ),
+            innerRadius: 30,  					//内圆半径
+            outerRadius: 40,  					//外圆的半径
+            innerStyle: '#faca5a', 				//内圆填充的颜色呢
+            outerStyle: '#E1E1E1',				//外圆环填充的颜色
+            text: 'JS'
+        })
+        L3_circle1.addToGroupOrLayer(L3Group);
+
+        // 创建外环上的第二个圆
+        var L3_circle2 = new circleMove({
+            x : outerRadius*Math.cos( -20 * Math.PI / 180 ),
+            y : outerRadius*Math.sin( -20 * Math.PI / 180 ),
+            innerRadius: 30,  					//内圆半径
+            outerRadius: 40,  					//外圆的半径
+            innerStyle: '#8972fa', 				//内圆填充的颜色呢
+            outerStyle: '#E1E1E1',				//外圆环填充的颜色
+            text: 'jQuery'
+        })
+        L3_circle2.addToGroupOrLayer(L3Group);
+
+        // 创建外环上的第三个圆
+        var L3_circle3 = new circleMove({
+            x : outerRadius*Math.cos( 45 * Math.PI / 180 ),
+            y : outerRadius*Math.sin( 45 * Math.PI / 180 ),
+            innerRadius: 30,  					//内圆半径
+            outerRadius: 40,  					//外圆的半径
+            innerStyle: '#81fa87', 				//内圆填充的颜色呢
+            outerStyle: '#E1E1E1',				//外圆环填充的颜色
+            text: 'Boot'
+        })
+        L3_circle3.addToGroupOrLayer(L3Group);
+
+        // 创建外环上的第四个圆
+        var L3_circle4 = new circleMove({
+            x : outerRadius*Math.cos( 110 * Math.PI / 180 ),
+            y : outerRadius*Math.sin( 110 * Math.PI / 180 ),
+            innerRadius: 30,  					//内圆半径
+            outerRadius: 40,  					//外圆的半径
+            innerStyle: '#c9b7fa', 				//内圆填充的颜色呢
+            outerStyle: '#E1E1E1',				//外圆环填充的颜色
+            text: 'Sass'
+        })
+        L3_circle4.addToGroupOrLayer(L3Group);
+
+        // 创建外环上的第五个圆
+        var L3_circle5 = new circleMove({
+            x : outerRadius*Math.cos( 175 * Math.PI / 180 ),
+            y : outerRadius*Math.sin( 175 * Math.PI / 180 ),
+            innerRadius: 30,  					//内圆半径
+            outerRadius: 40,  					//外圆的半径
+            innerStyle: '#fa350a', 				//内圆填充的颜色呢
+            outerStyle: '#E1E1E1',				//外圆环填充的颜色
+            text: 'Vue'
+        })
+        L3_circle5.addToGroupOrLayer(L3Group);
+
+        // 绘制动画层
+        animateLayer.draw();
+        // 动画层结束
+
+        // 开始做动画
+        var rotateAngleSecond = 60; //设置每秒钟旋转60°
+        //Konva的帧动画系统
+        var animate = new Konva.Animation(function (frame) {
+            //每隔一会执行此方法，类似 setInterval
+            //timeDiff: 是两帧之间的时间差。是变化的，根据电脑性能和浏览器的状态动态变化。
+
+            //计算当前帧需要旋转的角度。
+            var rotateAngle =  frame.timeDiff*rotateAngleSecond/1000;
+
+            // 内环正向旋转且内环上的圆同时进行反向旋转，类似于地球自转的同时公转。
+            L2Group.rotate(rotateAngle);
+            L2Group.getChildren().each(function (item,index) {
+                item.rotate(-rotateAngle);
+            });
+
+            // 外环反向旋转同时外环上的圆正向旋转
+            L3Group.rotate(-rotateAngle);
+            L3Group.getChildren().each(function (item,index) {
+                item.rotate(rotateAngle);
+            });
+        },animateLayer);
+
+        // 启动动画
+        animate.start();
+        // 动画结束
+
+        //是Konva的事件系统，jQuery一样的
+        // 给动画层绑定一个鼠标移上去的事件
+        animateLayer.on('mouseover',function () {
+            // 设置旋转的角度使旋转变慢
+            rotateAngleSecond = 10;
+        });
+        // 鼠标离开后回复原来的速度
+        animateLayer.on('mouseout',function () {
+            rotateAngleSecond = 60;
+        })
+    </script>
+</body>
+</html>
